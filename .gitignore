@@ -1,0 +1,13 @@
+*.o
+*.lst
+*.dt
+*.s
+*.i
+llq.txt
+llq.bat
+llq.cds
+llq.cml
+llq.cpj
+llq.dbg
+llq.map
+llq.pji
