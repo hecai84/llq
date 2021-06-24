@@ -51,16 +51,16 @@ void Delay()
 {
 	unsigned char i, j, k;
 	for (i = 15; i > 0; i--)
-		for (j = 80; j > 0; j--)
+		for (j = 6; j > 0; j--)
 			for (k = 50; k > 0; k--)
 				;
 }
 void io_init()
 {
 	P6CR=0X70;					//P65输入 ,其他输出
-	PORT6=0X20;					//P65设为高
-	PHCR=0XDF;					//P65上拉,其他禁止上拉
+	PHCR=0XDE;					//P65上拉,其他禁止上拉
 	PDCR=0xff;					//禁止下拉	
+	PORT6=0X20;					//P65设为高
 }
 
 void tcc_init()
@@ -120,15 +120,16 @@ void File_Sleep()
 
 void pwm_init()
 {
-	PWMCON = 0xdd; //pwm计数器，pwm1/3使能,t1 1:256
-	PRD = pwmDt*2-1;	   //	PWM = (1/8M) * 256 * (34+1) = 1120us
+	PWMCON = 0x9d; //pwm计数器，pwm1/3使能,t1 1:256
+	PRD = (pwmDt<<1)-1;	   //	PWM = (1/8M) * 256 * (34+1) = 1120us
 	PDC1 = pwmDt;
 	//PDC2 = 20;
-	PDC3 = pwmDt;
+	//PDC3 = pwmDt;
 }
 
 void main()
 {
+	unsigned char i;
 	DISI();
 	_asm
 	{
@@ -137,24 +138,33 @@ void main()
 	}
 	io_init();
 	tcc_init();
+	P60=0;
+	for(i=0;i<100;i++)
+	{
+		Delay();
+	}
 	while (1)
 	{
 		if (P65 == 0)
 		{
 			Delay();
 			Delay();
+			Delay();
+			Delay();
+			Delay();
 			if(P65 == 0)
 			{
 				pwm_init();
+				P60=1;
 				while (1)
 				{
-					PRD = pwmDt*2-1;	   //	PWM = (1/8M) * 256 * (34+1) = 1120us
+					PRD = (pwmDt<<1)-1;	   //	PWM = (1/8M) * 256 * (34+1) = 1120us
 					PDC1 = pwmDt;
-					PDC3 = pwmDt;
+					//PDC3 = pwmDt;
 					
-					if (pwmDt >= 31)
+					if (pwmDt >= 30)
 						pwmDtAdd = 0;
-					if (pwmDt <= 5)
+					if (pwmDt <= 10)
 						pwmDtAdd = 1;
 	
 					if (pwmDtAdd == 1)
