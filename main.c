@@ -57,10 +57,10 @@ void Delay()
 }
 void io_init()
 {
-	P6CR=0X70;					//P65输入 ,其他输出
-	PHCR=0XDE;					//P65上拉,其他禁止上拉
-	PDCR=0xff;					//禁止下拉	
-	PORT6=0X20;					//P65设为高
+	P6CR=0XE0;					//P65输入 ,其他输出
+	PHCR=0XDF;					//P65上拉,其他禁止上拉
+	PDCR=0xEF;					//P60下拉,其他禁止下拉	
+	PORT6=0X21;					//P65设为高,P60设置高
 }
 
 void tcc_init()
@@ -138,7 +138,7 @@ void main()
 	}
 	io_init();
 	tcc_init();
-	P60=0;
+	P60=1;
 	for(i=0;i<100;i++)
 	{
 		Delay();
@@ -155,7 +155,7 @@ void main()
 			if(P65 == 0)
 			{
 				pwm_init();
-				P60=1;
+				P60=0;
 				while (1)
 				{
 					PRD = (pwmDt<<1)-1;	   //	PWM = (1/8M) * 256 * (34+1) = 1120us
